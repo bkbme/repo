@@ -17,7 +17,7 @@ if [ $# -lt 3 ]; then
 fi
 
 #Vars
-company="Arges"
+company="mycomp"
 reporoot=/srv/repo
 arch=i386
 secretkeyringlocation=/srv/repo/gpg/secring.gpg

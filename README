@@ -1,0 +1,24 @@
+Single bash-script solution for managing debian-style repositories.
+
+Usage: ./repo.sh <distribution> <component> <command> [<packageFile> <packageFile> ... | <packageName>]
+        Where <command> is of:
+           -r: Rebuild for all packages
+           -a: Add new package <packageFile>
+           -l: List all info about repo. When <packageName> is supplied: 
+               List only version info about <packageName>
+
+Examples:
+
+Create a new repository and add some deb-files:
+The name of the distribution should be "experimental" and the
+name of the comonent is "main".
+First change the variables company, reporoot, arch and secretkeyringlocation.
+
+mkdir -p experimental/main
+mkdir dists
+repo.sh experimental main -a joe-3.7-1.deb 
+
+To use this repository on the client:
+sources.list:
+deb <url> experimental main
+
