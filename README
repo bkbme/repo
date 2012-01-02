@@ -1,5 +1,7 @@
 Single bash-script solution for managing debian-style repositories.
 
+Dependency: dpkg-dev
+
 Usage: ./repo.sh <distribution> <component> <command> [<packageFile> <packageFile> ... | <packageName>]
         Where <command> is of:
            -r: Rebuild for all packages
