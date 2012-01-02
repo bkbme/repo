@@ -6,7 +6,7 @@ Usage: ./repo.sh <distribution> <component> <command> [<packageFile> <packageFil
            -a: Add new package <packageFile>
            -l: List all info about repo. When <packageName> is supplied: 
                List only version info about <packageName>
-
+----------------------------------------------------------------------------
 Examples:
 
 Create a new repository and add some deb-files:
@@ -21,4 +21,13 @@ repo.sh experimental main -a joe-3.7-1.deb
 To use this repository on the client:
 sources.list:
 deb <url> experimental main
+
+----------------------------------------------------------------------------
+
+The tool remote-repo.sh is used for running repo.sh on a remote server and passing commands to it.
+When adding files to the repository, the deb-files are transfered via scp.
+It is sensible to use public key authentication on the remote server because of multiple ssh and scp commands in remote-repo.sh. (Else -> multiple password prompts)
+
+./remote-repo.sh Usage: <remote-host> <repo commands> 
+
 
