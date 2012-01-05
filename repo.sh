@@ -57,7 +57,7 @@ function updatePackages {
 #absolute path.
 #The path specified for scanpackages must be accessible relative to the url of the
 #repository in the clients sources.list.
-  dpkg-scanpackages -m ${pkgsrc/"$reporoot/"/} $override > $packagesDest/Packages
+  apt-ftparchive packages ${pkgsrc/"$reporoot/"/} > $packagesDest/Packages
   cat $packagesDest/Packages | gzip > $packagesDest/Packages.gz
 }
 
@@ -76,6 +76,13 @@ function rebuildOverride {
   done
 }
 
+function createContentsFile {
+  contentsSrc=$1
+  contentsDest=dists/$2
+
+  apt-ftparchive contents $contentsSrc | gzip > $contentsDest/Contents-$arch.gz
+}
+
 #Create the release file for pinning
 function createReleaseFile {
   packagesDest=$1
@@ -90,17 +97,18 @@ Label: repo-server
 Codename: $dist
 Architectures: $arch 
 Components: $components
-Version: 1.0
-MD5Sum:" > $release
+Version: 1.0" > $release
 
-  for component in $components; do
-    for file in `cd dists/$dist; find $component/binary-$arch/ -type f`; do
-      fullpath=dists/$dist/$file
-      md5=`md5sum $fullpath | awk '{print $1}'`
-      size=`ls -all $fullpath | awk '{print $5}'`
-      echo -e " $md5 $size $file" >> $release
-    done
-  done
+
+  apt-ftparchive release dists/$dist >> $release
+#  for component in $components; do
+#    for file in `cd dists/$dist; find $component/binary-$arch/ -type f`; do
+#      fullpath=dists/$dist/$file
+#      md5=`md5sum $fullpath | awk '{print $1}'`
+#      size=`ls -all $fullpath | awk '{print $5}'`
+#      echo -e " $md5 $size $file" >> $release
+#    done
+#  done
  
   releasesec="$release.gpg"
   rm -f $releasesec
@@ -110,8 +118,9 @@ MD5Sum:" > $release
 case $3 in
 "-r")
   #Rebuild
-  rebuildOverride $override $pkgsrc
+  #rebuildOverride $override $pkgsrc
   updatePackages $pkgsrc $override $packagesDest
+  createContentsFile $pkgsrc $dist
   createReleaseFile $packagesDest $component $dist $arch
   ;;
 "-a")
